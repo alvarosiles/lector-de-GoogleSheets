@@ -5,7 +5,7 @@
 **Vigente desde:** 19 de octubre de 2026
 
 Al usar, desplegar o modificar este software aceptas los siguientes términos.
-
+<!-- ok -->
 ## 1. Licencia
 
 El código fuente se distribuye bajo la [licencia MIT](LICENSE). Puedes usarlo, copiarlo, modificarlo y distribuirlo, también con fines comerciales, siempre que conserves el aviso de copyright y el texto de la licencia.
