@@ -2,25 +2,276 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mi hoja de Google Sheets</title>
   <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --text: #1f2328;
+      --muted: #6b7280;
+      --border: #d8dce2;
+      --accent: #1a73e8;
+      --head: #eef1f5;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #16181c;
+        --panel: #1f2227;
+        --text: #e6e8eb;
+        --muted: #9aa1ab;
+        --border: #343840;
+        --accent: #6aa5ff;
+        --head: #262a31;
+      }
+    }
+    * { box-sizing: border-box; }
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
-    iframe {
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    header h1 {
+      font-size: 18px;
+      margin: 0 auto 0 0;
+    }
+    button {
+      font: inherit;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+    }
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    button:disabled { opacity: .5; cursor: default; }
+    #status {
+      padding: 8px 16px;
+      font-size: 14px;
+      color: var(--muted);
+      min-height: 1.5em;
+    }
+    #status.error { color: #d93025; }
+    .wrap {
+      overflow: auto;
+      padding: 0 16px 16px;
+    }
+    table {
+      border-collapse: collapse;
+      background: var(--panel);
+    }
+    th, td {
+      border: 1px solid var(--border);
+      min-width: 120px;
+      height: 32px;
+      padding: 0;
+    }
+    th {
+      background: var(--head);
+      font-weight: 500;
+      font-size: 13px;
+      color: var(--muted);
+      padding: 0 8px;
+    }
+    th.rownum { min-width: 40px; }
+    td input {
       width: 100%;
-      height: 100vh;
-      border: none;
+      height: 100%;
+      border: 0;
+      padding: 4px 8px;
+      font: inherit;
+      background: transparent;
+      color: var(--text);
     }
+    td input:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+    }
+    td.changed { background: rgba(26, 115, 232, .08); }
   </style>
 </head>
 <body>
 
-<iframe 
-  src="https://docs.google.com/spreadsheets/d/e/2PACX-1vT7Aeseiho6yN_XELabTwfD0MaNvZdzoFLDHV6ixzC9lQ7al4tDv3pdj0XlwNhwrcS-WoRalA9IezWI/pubhtml">
-</iframe>
+<header>
+  <h1>Mi hoja de Google Sheets</h1>
+  <button id="btnLoad">Recargar</button>
+  <button id="btnRow">+ Fila</button>
+  <button id="btnCol">+ Columna</button>
+  <button id="btnSave" class="primary" disabled>Guardar</button>
+  <button id="btnToken" title="Cambiar token">🔑</button>
+</header>
+
+<div id="status"></div>
+<div class="wrap"><table id="grid"></table></div>
+
+<script>
+  // URL de la aplicación web de Apps Script (la que termina en /exec)
+  const API_URL = 'https://script.google.com/macros/s/AKfycbx6DwHN0zNWGED3NgKpOQup_quThhyRzOR0UnwxY5LE98PcLm2q51FHYpuHfLq1268n/exec';
+  const SHEET = ''; // nombre de la pestaña; vacío = la primera
+
+  let data = [];
+  let dirty = false;
+
+  const $ = (id) => document.getElementById(id);
+
+  function getToken(forceAsk) {
+    let token = null;
+    try { token = localStorage.getItem('sheetToken'); } catch (e) {}
+    if (!token || forceAsk) {
+      token = prompt('Token de acceso a la hoja:', token || '');
+      if (token) {
+        try { localStorage.setItem('sheetToken', token); } catch (e) {}
+      }
+    }
+    return token;
+  }
+
+  function setStatus(msg, isError) {
+    $('status').textContent = msg;
+    $('status').className = isError ? 'error' : '';
+  }
+
+  function colName(n) {
+    let s = '';
+    for (n++; n > 0; n = Math.floor((n - 1) / 26)) {
+      s = String.fromCharCode(65 + ((n - 1) % 26)) + s;
+    }
+    return s;
+  }
+
+  function setDirty(value) {
+    dirty = value;
+    $('btnSave').disabled = !value;
+  }
+
+  function render() {
+    const cols = Math.max(...data.map(r => r.length));
+    let html = '<tr><th class="rownum"></th>';
+    for (let c = 0; c < cols; c++) html += `<th>${colName(c)}</th>`;
+    html += '</tr>';
+    data.forEach((row, r) => {
+      html += `<tr><th class="rownum">${r + 1}</th>`;
+      for (let c = 0; c < cols; c++) {
+        html += `<td><input data-r="${r}" data-c="${c}"></td>`;
+      }
+      html += '</tr>';
+    });
+    $('grid').innerHTML = html;
+    // asignar valores por propiedad para no tener que escapar HTML
+    $('grid').querySelectorAll('input').forEach(inp => {
+      const v = data[inp.dataset.r][inp.dataset.c];
+      inp.value = v == null ? '' : v;
+    });
+  }
+
+  function normalize() {
+    const cols = Math.max(1, ...data.map(r => r.length));
+    data = data.map(r => {
+      const row = r.slice();
+      while (row.length < cols) row.push('');
+      return row;
+    });
+  }
+
+  async function load() {
+    const token = getToken();
+    if (!token) return setStatus('Falta el token.', true);
+    setStatus('Cargando…');
+    try {
+      const params = new URLSearchParams({ token });
+      if (SHEET) params.set('sheet', SHEET);
+      const res = await fetch(`${API_URL}?${params}`);
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error);
+      data = json.values;
+      // hoja vacía: empezar con una cuadrícula de 10x5
+      if (data.length === 1 && data[0].length === 1 && data[0][0] === '') {
+        data = Array.from({ length: 10 }, () => Array(5).fill(''));
+      }
+      normalize();
+      render();
+      setDirty(false);
+      setStatus(`Cargado: ${data.length} filas.`);
+    } catch (err) {
+      setStatus('Error al cargar: ' + err.message, true);
+    }
+  }
+
+  async function save() {
+    const token = getToken();
+    if (!token) return setStatus('Falta el token.', true);
+    normalize();
+    const cols = data[0].length;
+    const range = `A1:${colName(cols - 1)}${data.length}`;
+    setStatus('Guardando…');
+    $('btnSave').disabled = true;
+    try {
+      // text/plain evita el preflight CORS que Apps Script no soporta
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ token, sheet: SHEET || undefined, action: 'set', range, values: data })
+      });
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error);
+      $('grid').querySelectorAll('td.changed').forEach(td => td.classList.remove('changed'));
+      setDirty(false);
+      setStatus('Guardado ✔');
+    } catch (err) {
+      setDirty(true);
+      setStatus('Error al guardar: ' + err.message, true);
+    }
+  }
+
+  $('grid').addEventListener('input', (e) => {
+    const inp = e.target;
+    data[inp.dataset.r][inp.dataset.c] = inp.value;
+    inp.parentElement.classList.add('changed');
+    setDirty(true);
+  });
+
+  $('btnLoad').onclick = () => {
+    if (dirty && !confirm('Hay cambios sin guardar. ¿Recargar igual?')) return;
+    load();
+  };
+  $('btnSave').onclick = save;
+  $('btnRow').onclick = () => {
+    data.push(Array(data[0].length).fill(''));
+    render();
+    setDirty(true);
+  };
+  $('btnCol').onclick = () => {
+    data.forEach(r => r.push(''));
+    render();
+    setDirty(true);
+  };
+  $('btnToken').onclick = () => { if (getToken(true)) load(); };
+
+  window.addEventListener('beforeunload', (e) => {
+    if (dirty) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  load();
+</script>
 
 </body>
 </html>
