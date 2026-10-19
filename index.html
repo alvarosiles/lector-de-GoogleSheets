@@ -5,34 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mi hoja de Google Sheets</title>
   <style>
+    /* ---------- Colores (claro / oscuro) ---------- */
     :root {
-      --bg: #f6f7f9;
+      --fondo: #f6f7f9;
       --panel: #ffffff;
-      --text: #1f2328;
-      --muted: #6b7280;
-      --border: #d8dce2;
-      --accent: #1a73e8;
-      --head: #eef1f5;
+      --texto: #1f2328;
+      --gris: #6b7280;
+      --borde: #d8dce2;
+      --azul: #1a73e8;
+      --encabezado: #eef1f5;
+      --cambiado: #fff4c2;
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #16181c;
+        --fondo: #16181c;
         --panel: #1f2227;
-        --text: #e6e8eb;
-        --muted: #9aa1ab;
-        --border: #343840;
-        --accent: #6aa5ff;
-        --head: #262a31;
+        --texto: #e6e8eb;
+        --gris: #9aa1ab;
+        --borde: #343840;
+        --azul: #6aa5ff;
+        --encabezado: #262a31;
+        --cambiado: #4a4320;
       }
     }
+
+    /* ---------- Estructura general ---------- */
     * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      color: var(--text);
+    html, body { height: 100%; margin: 0; }
+    body {
+      display: flex;
+      flex-direction: column;
+      background: var(--fondo);
+      color: var(--texto);
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
+
+    /* ---------- Barra superior ---------- */
     header {
       display: flex;
       flex-wrap: wrap;
@@ -40,237 +48,321 @@
       align-items: center;
       padding: 12px 16px;
       background: var(--panel);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 2;
+      border-bottom: 1px solid var(--borde);
     }
-    header h1 {
-      font-size: 18px;
-      margin: 0 auto 0 0;
-    }
+    header h1 { font-size: 18px; margin: 0 auto 0 0; }
+    #estado { font-size: 14px; color: var(--gris); }
+    #estado.error { color: #d93025; }
+
     button {
       font: inherit;
       padding: 6px 12px;
-      border: 1px solid var(--border);
+      border: 1px solid var(--borde);
       border-radius: 6px;
       background: var(--panel);
-      color: var(--text);
+      color: var(--texto);
       cursor: pointer;
     }
-    button.primary {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-    }
+    button.principal { background: var(--azul); border-color: var(--azul); color: #fff; }
     button:disabled { opacity: .5; cursor: default; }
-    #status {
-      padding: 8px 16px;
-      font-size: 14px;
-      color: var(--muted);
-      min-height: 1.5em;
-    }
-    #status.error { color: #d93025; }
-    .wrap {
-      overflow: auto;
-      padding: 0 16px 16px;
-    }
-    table {
-      border-collapse: collapse;
-      background: var(--panel);
-    }
-    th, td {
-      border: 1px solid var(--border);
-      min-width: 120px;
-      height: 32px;
-      padding: 0;
-    }
+
+    /* ---------- Tabla ---------- */
+    main { flex: 1; overflow: auto; }
+    table { border-collapse: collapse; background: var(--panel); }
+    th, td { border: 1px solid var(--borde); height: 30px; padding: 0; }
     th {
-      background: var(--head);
+      background: var(--encabezado);
+      color: var(--gris);
       font-weight: 500;
       font-size: 13px;
-      color: var(--muted);
       padding: 0 8px;
+      position: sticky;
     }
-    th.rownum { min-width: 40px; }
+    thead th { top: 0; z-index: 1; }       /* letras fijas arriba */
+    th.numero { left: 0; min-width: 44px; } /* números fijos a la izquierda */
+    thead th.numero { z-index: 2; }
     td input {
-      width: 100%;
+      width: 140px;
       height: 100%;
       border: 0;
       padding: 4px 8px;
       font: inherit;
       background: transparent;
-      color: var(--text);
+      color: var(--texto);
     }
-    td input:focus {
-      outline: 2px solid var(--accent);
-      outline-offset: -2px;
+    td input:focus { outline: 2px solid var(--azul); outline-offset: -2px; }
+    td.cambiado { background: var(--cambiado); }
+
+    /* ---------- Pestañas (abajo, como en Google Sheets) ---------- */
+    nav {
+      display: flex;
+      gap: 4px;
+      padding: 6px 16px;
+      background: var(--panel);
+      border-top: 1px solid var(--borde);
+      overflow-x: auto;
     }
-    td.changed { background: rgba(26, 115, 232, .08); }
+    nav button { border: 0; white-space: nowrap; }
+    nav button.activa { background: var(--encabezado); color: var(--azul); font-weight: 600; }
   </style>
 </head>
 <body>
 
-<header>
-  <h1>Mi hoja de Google Sheets</h1>
-  <button id="btnLoad">Recargar</button>
-  <button id="btnRow">+ Fila</button>
-  <button id="btnCol">+ Columna</button>
-  <button id="btnSave" class="primary" disabled>Guardar</button>
-  <button id="btnToken" title="Cambiar token">🔑</button>
-</header>
+  <header>
+    <h1>Mi hoja de Google Sheets</h1>
+    <span id="estado"></span>
+    <button id="btnFila">+ Fila</button>
+    <button id="btnColumna">+ Columna</button>
+    <button id="btnRecargar">Recargar</button>
+    <button id="btnGuardar" class="principal" disabled>Guardar</button>
+    <button id="btnToken" title="Cambiar token">🔑</button>
+  </header>
 
-<div id="status"></div>
-<div class="wrap"><table id="grid"></table></div>
+  <main>
+    <table id="tabla"></table>
+  </main>
+
+  <nav id="pestanas"></nav>
 
 <script>
-  // URL de la aplicación web de Apps Script (la que termina en /exec)
-  const API_URL = 'https://script.google.com/macros/s/AKfycbx6DwHN0zNWGED3NgKpOQup_quThhyRzOR0UnwxY5LE98PcLm2q51FHYpuHfLq1268n/exec';
-  const SHEET = ''; // nombre de la pestaña; vacío = la primera
+// =============================================================
+//  CONFIGURACIÓN
+// =============================================================
 
-  let data = [];
-  let dirty = false;
+// URL de la aplicación web de Apps Script (termina en /exec)
+const URL_API = 'https://script.google.com/macros/s/AKfycbx6DwHN0zNWGED3NgKpOQup_quThhyRzOR0UnwxY5LE98PcLm2q51FHYpuHfLq1268n/exec';
 
-  const $ = (id) => document.getElementById(id);
+// Tamaño mínimo de la tabla en pantalla (para tener celdas vacías donde escribir)
+const FILAS_MINIMAS = 20;
+const COLUMNAS_MINIMAS = 6;
 
-  function getToken(forceAsk) {
-    let token = null;
-    try { token = localStorage.getItem('sheetToken'); } catch (e) {}
-    if (!token || forceAsk) {
-      token = prompt('Token de acceso a la hoja:', token || '');
-      if (token) {
-        try { localStorage.setItem('sheetToken', token); } catch (e) {}
-      }
-    }
-    return token;
+
+// =============================================================
+//  ESTADO
+// =============================================================
+
+let hojas = [];         // [{ nombre: 'Hoja 1', valores: [[...], [...]] }, ...]
+let hojaActual = 0;     // índice de la pestaña que se está viendo
+let cambios = {};       // { 'Hoja 1': { '1,1': 'Hola' } }  → celdas pendientes de guardar
+
+const $ = (id) => document.getElementById(id);
+
+
+// =============================================================
+//  UTILIDADES
+// =============================================================
+
+// 0 → A, 1 → B, ... 26 → AA
+function letraColumna(n) {
+  let letra = '';
+  for (n++; n > 0; n = Math.floor((n - 1) / 26)) {
+    letra = String.fromCharCode(65 + ((n - 1) % 26)) + letra;
   }
+  return letra;
+}
 
-  function setStatus(msg, isError) {
-    $('status').textContent = msg;
-    $('status').className = isError ? 'error' : '';
-  }
+function mostrarEstado(texto, esError) {
+  $('estado').textContent = texto;
+  $('estado').className = esError ? 'error' : '';
+}
 
-  function colName(n) {
-    let s = '';
-    for (n++; n > 0; n = Math.floor((n - 1) / 26)) {
-      s = String.fromCharCode(65 + ((n - 1) % 26)) + s;
-    }
-    return s;
-  }
+function hayCambios() {
+  return Object.values(cambios).some(c => Object.keys(c).length > 0);
+}
 
-  function setDirty(value) {
-    dirty = value;
-    $('btnSave').disabled = !value;
-  }
+function actualizarBotonGuardar() {
+  $('btnGuardar').disabled = !hayCambios();
+}
 
-  function render() {
-    const cols = Math.max(...data.map(r => r.length));
-    let html = '<tr><th class="rownum"></th>';
-    for (let c = 0; c < cols; c++) html += `<th>${colName(c)}</th>`;
-    html += '</tr>';
-    data.forEach((row, r) => {
-      html += `<tr><th class="rownum">${r + 1}</th>`;
-      for (let c = 0; c < cols; c++) {
-        html += `<td><input data-r="${r}" data-c="${c}"></td>`;
-      }
-      html += '</tr>';
-    });
-    $('grid').innerHTML = html;
-    // asignar valores por propiedad para no tener que escapar HTML
-    $('grid').querySelectorAll('input').forEach(inp => {
-      const v = data[inp.dataset.r][inp.dataset.c];
-      inp.value = v == null ? '' : v;
-    });
-  }
-
-  function normalize() {
-    const cols = Math.max(1, ...data.map(r => r.length));
-    data = data.map(r => {
-      const row = r.slice();
-      while (row.length < cols) row.push('');
-      return row;
-    });
-  }
-
-  async function load() {
-    const token = getToken();
-    if (!token) return setStatus('Falta el token.', true);
-    setStatus('Cargando…');
-    try {
-      const params = new URLSearchParams({ token });
-      if (SHEET) params.set('sheet', SHEET);
-      const res = await fetch(`${API_URL}?${params}`);
-      const json = await res.json();
-      if (!json.ok) throw new Error(json.error);
-      data = json.values;
-      // hoja vacía: empezar con una cuadrícula de 10x5
-      if (data.length === 1 && data[0].length === 1 && data[0][0] === '') {
-        data = Array.from({ length: 10 }, () => Array(5).fill(''));
-      }
-      normalize();
-      render();
-      setDirty(false);
-      setStatus(`Cargado: ${data.length} filas.`);
-    } catch (err) {
-      setStatus('Error al cargar: ' + err.message, true);
+// El token se pide una vez y queda guardado en este navegador
+function obtenerToken(preguntarDeNuevo) {
+  let token = null;
+  try { token = localStorage.getItem('tokenHoja'); } catch (e) {}
+  if (!token || preguntarDeNuevo) {
+    token = prompt('Escribe el token de la hoja:', token || '');
+    if (token) {
+      try { localStorage.setItem('tokenHoja', token); } catch (e) {}
     }
   }
+  return token;
+}
 
-  async function save() {
-    const token = getToken();
-    if (!token) return setStatus('Falta el token.', true);
-    normalize();
-    const cols = data[0].length;
-    const range = `A1:${colName(cols - 1)}${data.length}`;
-    setStatus('Guardando…');
-    $('btnSave').disabled = true;
-    try {
-      // text/plain evita el preflight CORS que Apps Script no soporta
-      const res = await fetch(API_URL, {
+
+// =============================================================
+//  DIBUJAR
+// =============================================================
+
+function dibujarPestanas() {
+  $('pestanas').innerHTML = '';
+  hojas.forEach((hoja, i) => {
+    const boton = document.createElement('button');
+    const pendientes = Object.keys(cambios[hoja.nombre] || {}).length;
+    boton.textContent = hoja.nombre + (pendientes ? ' •' : '');
+    boton.className = i === hojaActual ? 'activa' : '';
+    boton.onclick = () => { hojaActual = i; dibujarTodo(); };
+    $('pestanas').appendChild(boton);
+  });
+}
+
+function dibujarTabla() {
+  const hoja = hojas[hojaActual];
+  const valores = hoja.valores;
+  const filas = Math.max(FILAS_MINIMAS, valores.length);
+  const columnas = Math.max(COLUMNAS_MINIMAS, ...valores.map(f => f.length));
+  const pendientes = cambios[hoja.nombre] || {};
+
+  const tabla = $('tabla');
+  tabla.innerHTML = '';
+
+  // Encabezado: A, B, C...
+  const encabezado = tabla.createTHead().insertRow();
+  encabezado.appendChild(Object.assign(document.createElement('th'), { className: 'numero' }));
+  for (let c = 0; c < columnas; c++) {
+    encabezado.appendChild(Object.assign(document.createElement('th'), { textContent: letraColumna(c) }));
+  }
+
+  // Filas: 1, 2, 3...
+  const cuerpo = tabla.createTBody();
+  for (let f = 0; f < filas; f++) {
+    const fila = cuerpo.insertRow();
+    fila.appendChild(Object.assign(document.createElement('th'), { className: 'numero', textContent: f + 1 }));
+
+    for (let c = 0; c < columnas; c++) {
+      const clave = (f + 1) + ',' + (c + 1);          // fila,columna empezando en 1
+      const celda = fila.insertCell();
+      const input = document.createElement('input');
+
+      if (clave in pendientes) {
+        input.value = pendientes[clave];
+        celda.className = 'cambiado';
+      } else {
+        input.value = (valores[f] && valores[f][c]) || '';
+      }
+
+      input.oninput = () => {
+        cambios[hoja.nombre] = cambios[hoja.nombre] || {};
+        cambios[hoja.nombre][clave] = input.value;
+        celda.className = 'cambiado';
+        actualizarBotonGuardar();
+        dibujarPestanas();
+      };
+
+      celda.appendChild(input);
+    }
+  }
+}
+
+function dibujarTodo() {
+  dibujarPestanas();
+  dibujarTabla();
+  actualizarBotonGuardar();
+}
+
+
+// =============================================================
+//  CARGAR Y GUARDAR (conexión con Apps Script)
+// =============================================================
+
+async function cargar() {
+  const token = obtenerToken();
+  if (!token) return mostrarEstado('Falta el token (botón 🔑).', true);
+
+  mostrarEstado('Cargando…');
+  try {
+    const respuesta = await fetch(URL_API + '?token=' + encodeURIComponent(token));
+    const datos = await respuesta.json();
+    if (!datos.ok) throw new Error(datos.error);
+    if (!datos.hojas) throw new Error('falta actualizar el Apps Script (ver apps-script.gs)');
+
+    hojas = datos.hojas;
+    hojaActual = Math.min(hojaActual, hojas.length - 1);
+    cambios = {};
+    dibujarTodo();
+    mostrarEstado('');
+  } catch (error) {
+    mostrarEstado('Error al cargar: ' + error.message, true);
+  }
+}
+
+async function guardar() {
+  const token = obtenerToken();
+  if (!token) return mostrarEstado('Falta el token (botón 🔑).', true);
+
+  mostrarEstado('Guardando…');
+  $('btnGuardar').disabled = true;
+
+  try {
+    // Se envía una petición por cada pestaña que tenga cambios
+    for (const nombreHoja of Object.keys(cambios)) {
+      const lista = Object.entries(cambios[nombreHoja]).map(([clave, valor]) => {
+        const [fila, columna] = clave.split(',').map(Number);
+        return { fila, columna, valor };
+      });
+      if (lista.length === 0) continue;
+
+      // 'text/plain' es necesario para que el navegador permita llamar a Apps Script
+      const respuesta = await fetch(URL_API, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ token, sheet: SHEET || undefined, action: 'set', range, values: data })
+        body: JSON.stringify({ token, hoja: nombreHoja, cambios: lista })
       });
-      const json = await res.json();
-      if (!json.ok) throw new Error(json.error);
-      $('grid').querySelectorAll('td.changed').forEach(td => td.classList.remove('changed'));
-      setDirty(false);
-      setStatus('Guardado ✔');
-    } catch (err) {
-      setDirty(true);
-      setStatus('Error al guardar: ' + err.message, true);
+      const datos = await respuesta.json();
+      if (!datos.ok) throw new Error(datos.error);
+
+      // Pasar los cambios guardados a los datos locales
+      const hoja = hojas.find(h => h.nombre === nombreHoja);
+      lista.forEach(({ fila, columna, valor }) => {
+        while (hoja.valores.length < fila) hoja.valores.push([]);
+        hoja.valores[fila - 1][columna - 1] = valor;
+      });
+      delete cambios[nombreHoja];
     }
+
+    dibujarTodo();
+    mostrarEstado('Guardado ✔');
+  } catch (error) {
+    actualizarBotonGuardar();
+    mostrarEstado('Error al guardar: ' + error.message, true);
   }
+}
 
-  $('grid').addEventListener('input', (e) => {
-    const inp = e.target;
-    data[inp.dataset.r][inp.dataset.c] = inp.value;
-    inp.parentElement.classList.add('changed');
-    setDirty(true);
-  });
 
-  $('btnLoad').onclick = () => {
-    if (dirty && !confirm('Hay cambios sin guardar. ¿Recargar igual?')) return;
-    load();
-  };
-  $('btnSave').onclick = save;
-  $('btnRow').onclick = () => {
-    data.push(Array(data[0].length).fill(''));
-    render();
-    setDirty(true);
-  };
-  $('btnCol').onclick = () => {
-    data.forEach(r => r.push(''));
-    render();
-    setDirty(true);
-  };
-  $('btnToken').onclick = () => { if (getToken(true)) load(); };
+// =============================================================
+//  BOTONES
+// =============================================================
 
-  window.addEventListener('beforeunload', (e) => {
-    if (dirty) { e.preventDefault(); e.returnValue = ''; }
-  });
+$('btnGuardar').onclick = guardar;
 
-  load();
+$('btnRecargar').onclick = () => {
+  if (hayCambios() && !confirm('Hay cambios sin guardar. ¿Recargar igual?')) return;
+  cargar();
+};
+
+$('btnToken').onclick = () => {
+  if (obtenerToken(true)) cargar();
+};
+
+$('btnFila').onclick = () => {
+  const valores = hojas[hojaActual].valores;
+  const filas = Math.max(FILAS_MINIMAS, valores.length);
+  while (valores.length <= filas) valores.push([]);
+  dibujarTabla();
+};
+
+$('btnColumna').onclick = () => {
+  const valores = hojas[hojaActual].valores;
+  if (valores.length === 0) valores.push([]);
+  const columnas = Math.max(COLUMNAS_MINIMAS, ...valores.map(f => f.length));
+  valores[0][columnas] = '';
+  dibujarTabla();
+};
+
+// Avisar si se cierra la página con cambios sin guardar
+window.addEventListener('beforeunload', (e) => {
+  if (hayCambios()) { e.preventDefault(); e.returnValue = ''; }
+});
+
+cargar();
 </script>
 
 </body>
