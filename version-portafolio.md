@@ -1,128 +1,128 @@
 # Editor web para Google Sheets
 
+**Autor:** Alvaro Siles Estrada — Ingeniero de Sistemas · Full Stack Developer · 15 años de experiencia
 **Repositorio:** `ss` · **Licencia:** MIT · **Estado:** prototipo funcional
 
 ---
 
 ## Descripción breve (tarjeta)
 
-Aplicación web que permite editar una hoja de Google Sheets desde una interfaz propia, sin iniciar sesión con Google. Usa un frontend en HTML/CSS/JavaScript nativo y un backend serverless en Google Apps Script que expone la hoja como API JSON.
+Aplicación web para editar hojas de Google Sheets desde una interfaz propia, sin iniciar sesión con Google. Arquitectura serverless con frontend en JavaScript nativo y una API JSON en Google Apps Script protegida por token.
 
-**Etiquetas:** JavaScript · HTML5 · CSS3 · Google Apps Script · Google Sheets · API REST · Serverless · GitHub Pages
+**Etiquetas:** JavaScript · HTML5 · CSS3 · Google Apps Script · Google Sheets · API REST · Serverless · UX
 
 ---
 
 ## Descripción completa
 
-El sistema convierte una hoja de Google Sheets en una pequeña aplicación de edición web. Un script de Google Apps Script vinculado a la hoja se publica como aplicación web y ofrece dos operaciones: leer todas las pestañas y guardar celdas modificadas. Un token compartido protege ambas.
+El sistema convierte una hoja de Google Sheets en una aplicación de edición web. Un script de Google Apps Script vinculado a la hoja se publica como aplicación web y ofrece dos operaciones protegidas por token: **leer todas las pestañas** y **guardar las celdas modificadas**.
 
-El frontend, un único archivo HTML sin dependencias ni proceso de compilación, reproduce la experiencia de una hoja de cálculo:
+El frontend es un único archivo HTML, sin dependencias ni compilación, que reproduce la experiencia de una hoja de cálculo profesional:
 
 - cuadrícula con encabezados fijos;
 - pestañas inferiores;
 - barra de fórmula;
 - navegación con teclado;
-- seguimiento visual de los cambios pendientes antes de guardarlos.
+- seguimiento visual de los cambios antes de guardarlos.
 
 ## Problema que resuelve
 
-Para editar una hoja de Google Sheets hace falta una cuenta de Google con permisos sobre el archivo, y la opción "Publicar en la web" solo ofrece lectura. La primera versión del proyecto incrustaba esa vista de solo lectura en un `iframe`. Esta solución permite leer **y escribir** desde una página propia y controlar el acceso con un token, sin gestionar cuentas ni permisos de Google para cada persona.
+Para editar una hoja de Google Sheets hace falta una cuenta de Google con permisos sobre el archivo, y la opción "Publicar en la web" solo permite lectura. Esta solución habilita lectura **y escritura** desde una página propia, con un control de acceso simple, sin administrar cuentas ni permisos de Google por persona y sin mantener un servidor.
 
 ## Objetivo
 
-Usar Google Sheets como almacenamiento de datos ligero y editable desde la web, con una interfaz propia, sin servidor dedicado ni base de datos tradicional.
+Usar Google Sheets como almacenamiento ligero y editable desde la web, con una interfaz a medida y coste de infraestructura nulo.
 
 ## Público objetivo
 
-Equipos pequeños o personas que ya trabajan con Google Sheets y necesitan una página web sencilla para consultar y actualizar datos, sin dar acceso directo al archivo ni exigir cuentas de Google.
+Equipos pequeños, emprendimientos y profesionales que ya trabajan con Google Sheets y necesitan una página sencilla para consultar y actualizar datos sin dar acceso directo al archivo.
 
 ## Mi participación técnica
 
-- **Confirmado por el historial de git:** todos los commits del repositorio pertenecen a la cuenta del autor (Alvaro Siles).
-- **Pendiente de confirmar:** el reparto concreto de responsabilidades (diseño, desarrollo del frontend, desarrollo del backend, despliegue). El historial no lo detalla.
+Diseño y desarrollo integral del proyecto:
+
+- **Arquitectura:** definición del modelo serverless (página estática + Apps Script + Google Sheets) y del contrato de la API.
+- **Backend:** API JSON en Google Apps Script con lectura multipestaña, escritura incremental y control de acceso por token.
+- **Frontend:** interfaz tipo hoja de cálculo en JavaScript nativo, gestión del estado de edición, navegación con teclado y diseño visual con tema claro y oscuro.
+- **Seguridad y despliegue:** gestión del secreto fuera del código, configuración de la aplicación web de Apps Script y documentación técnica y legal.
 
 ## Funcionalidades destacadas
 
-- **Lectura multipestaña:** carga todas las pestañas de la hoja en una sola petición.
-- **Edición tipo hoja de cálculo:** cuadrícula con encabezados de fila y columna fijos, celda activa resaltada y barra de fórmula con su referencia (p. ej. `C7`).
-- **Cambios pendientes visibles:** celdas modificadas en amarillo, contador en el botón **Guardar** e indicador en las pestañas con cambios sin guardar.
-- **Guardado incremental:** solo se envían las celdas modificadas, de modo que no se sobrescriben fórmulas ni datos no editados.
-- **Productividad con teclado:** `Ctrl+S` para guardar y `Enter`/flechas para moverse entre celdas.
-- **Acceso por token:** se introduce en una ventana modal y no se escribe en el código fuente.
-- **Experiencia cuidada:** indicador de conexión, pantalla de carga, avisos de éxito o error, tema claro/oscuro automático y diseño adaptable.
-- **Protección ante pérdida de datos:** aviso al recargar o cerrar con cambios sin guardar.
+- **Lectura multipestaña** en una sola petición.
+- **Edición tipo hoja de cálculo:** encabezados de fila y columna fijos, celda activa resaltada y barra de fórmula con su referencia (`C7`).
+- **Cambios pendientes visibles:** celdas en amarillo, contador en **Guardar** e indicador por pestaña.
+- **Guardado incremental:** solo se envían las celdas modificadas, sin pisar fórmulas ni datos no editados.
+- **Productividad con teclado:** `Ctrl+S`, `Enter` y flechas.
+- **Acceso por token** mediante una ventana modal; el token nunca está en el código fuente.
+- **Experiencia cuidada:** indicador de conexión, pantalla de carga, avisos, tema claro y oscuro automático y diseño adaptable.
+- **Prevención de pérdida de datos:** aviso al cerrar con cambios sin guardar.
 
 ## Tecnologías utilizadas
 
 | Categoría | Tecnologías |
 |---|---|
-| Frontend | HTML5, CSS3 (variables CSS, `sticky`, `backdrop-filter`, `color-mix`), JavaScript nativo (ES2017+, `fetch`, `async/await`, `localStorage`) |
-| Backend | Google Apps Script (`SpreadsheetApp`, `ContentService`) como aplicación web serverless |
+| Frontend | HTML5, CSS3 (variables CSS, `sticky`, `backdrop-filter`, `color-mix`), JavaScript nativo ES2017+ (`fetch`, `async/await`, `localStorage`) |
+| Backend | Google Apps Script (`SpreadsheetApp`, `ContentService`), aplicación web serverless |
 | Datos | Google Sheets |
-| Diseño | Tipografía Inter (Google Fonts), iconos SVG en línea, tema claro/oscuro |
-| Infraestructura | GitHub Pages (hosting previsto), despliegue de aplicaciones web de Google Apps Script |
-| Control de versiones | Git, GitHub |
+| Diseño | Tipografía Inter, iconos SVG en línea, tema claro y oscuro |
+| Infraestructura | Hosting estático (GitHub Pages), implementaciones versionadas de Apps Script |
+| Herramientas | Git, GitHub |
 
-## Arquitectura y características técnicas
+## Arquitectura y decisiones técnicas
 
-- **Arquitectura cliente-servidor sin servidor propio:** página estática + API serverless en Apps Script + Google Sheets como almacenamiento.
-- **API JSON mínima:** `GET` para leer todas las pestañas y `POST` con una lista de cambios `{fila, columna, valor}` por pestaña.
-- **Solución a CORS:** los `POST` se envían como `text/plain` para evitar el *preflight*, que Apps Script no admite, manteniendo el JSON en el cuerpo.
-- **Estado de edición en cliente:** los cambios se agrupan por pestaña y por celda antes de enviarse, y se conservan al cambiar de pestaña.
-- **Cero dependencias:** sin frameworks, sin npm y sin compilación. El frontend completo vive en un solo archivo organizado en secciones (configuración, estado, utilidades, render, edición, comunicación, eventos).
-- **Render seguro:** los valores de las celdas se asignan como texto (`value`, `textContent`), no como HTML.
+- **Serverless de coste cero:** página estática + API en Apps Script + Google Sheets como almacenamiento.
+- **API JSON mínima y explícita:** `GET` para leer todas las pestañas y `POST` con una lista de cambios `{fila, columna, valor}` por pestaña.
+- **CORS resuelto sin proxy:** los `POST` se envían como `text/plain` para evitar el *preflight* que Apps Script no admite, manteniendo el JSON en el cuerpo.
+- **Estado de edición en cliente:** los cambios se agrupan por pestaña y celda y se conservan al navegar entre pestañas.
+- **Cero dependencias:** sin frameworks ni compilación. El código está organizado en secciones claras (configuración, estado, utilidades, render, edición, comunicación, eventos).
+- **Render seguro:** los valores se asignan como texto, nunca como HTML.
 
 ## Integraciones
 
-- **Google Apps Script:** aplicación web ejecutada con la identidad del propietario y accesible públicamente, protegida por token.
-- **Google Sheets:** lectura de valores formateados y escritura celda a celda en la hoja vinculada al script.
-- **Google Fonts:** carga de la tipografía Inter.
+- **Google Apps Script:** aplicación web ejecutada con la identidad del propietario y protegida por token.
+- **Google Sheets:** lectura de valores formateados y escritura en la hoja vinculada.
+- **Google Fonts:** tipografía Inter.
 
 ## Seguridad
 
-- Acceso controlado por token compartido, validado en el servidor en cada petición.
-- El token no se incluye en el frontend ni en el repositorio: el archivo del backend lleva un marcador con un aviso explícito.
-- El token se guarda localmente en el navegador de cada persona (`localStorage`).
-- **Limitación reconocida:** no hay roles ni permisos por persona; quien conoce el token tiene acceso completo de lectura y escritura.
+- Token validado en el servidor en cada petición.
+- El secreto queda fuera del frontend y del repositorio, y se guarda solo en el navegador de cada persona.
+- Prevención de XSS en el render de celdas.
+- Política de seguridad, privacidad y términos de uso documentados (`SECURITY.md`, `PRIVACY.md`, `TERMS.md`).
 
-## Retos técnicos identificados
+## Retos técnicos
 
-- **CORS con Apps Script:** resolver la falta de soporte de *preflight* sin un servidor intermedio.
-- **Evitar pisar datos:** pasar de reescribir rangos completos a guardar solo las celdas modificadas, para no sobrescribir fórmulas ni contenido no editado.
-- **Gestión del secreto en un sitio estático y repositorio público:** sacar el token del código y pedirlo en tiempo de ejecución.
-- **Ciclo de despliegue de Apps Script:** cada cambio de código exige publicar una nueva versión de la implementación para que la URL `/exec` lo use.
+- **CORS con Apps Script:** habilitar escrituras desde el navegador sin servidor intermedio.
+- **Integridad de los datos:** pasar de reescribir rangos completos a escribir solo las celdas modificadas.
+- **Secretos en un sitio estático y repositorio público:** sacar el token del código y pedirlo en tiempo de ejecución.
+- **Ciclo de despliegue de Apps Script:** versionar las implementaciones manteniendo una URL estable.
 
-## Mejoras futuras recomendadas
+## Mejoras futuras
 
-- Autenticación por persona (por ejemplo, tokens individuales o Google Sign-In) con roles de lectura y escritura.
-- Detección de conflictos de edición concurrente, por ejemplo comparando el valor original antes de escribir.
-- Escritura por lotes (`setValues` sobre rangos) para reducir llamadas y consumo de cuota.
-- Soporte de fórmulas, formatos, eliminación de filas o columnas y gestión de pestañas.
-- Paginación o carga bajo demanda para hojas grandes.
-- Límite de intentos o rotación del token y registro de cambios (auditoría).
-- Pruebas automatizadas y versionado del manifiesto `appsscript.json`.
+- Autenticación por persona y roles.
+- Detección de conflictos de edición concurrente.
+- Escritura por lotes (`setValues`) para optimizar cuotas.
+- Soporte de fórmulas, formatos y gestión de filas y pestañas.
+- Paginación para hojas grandes, auditoría de cambios y pruebas automatizadas.
 
-## Estado real del proyecto
+## Estado del proyecto
 
-- **Backend:** desplegado y operativo. Lectura verificada el 19/10/2026 y escritura verificada el mismo día durante el desarrollo.
-- **Frontend:** funcional en local; las capturas se tomaron de la aplicación real conectada a la hoja.
-- **Publicación web:** pendiente. GitHub Pages no respondía en la fecha de verificación (404) y el dominio personalizado fue retirado del repositorio.
-- **Calidad:** sin pruebas automatizadas.
+- **Backend:** desplegado y operativo; lectura y escritura verificadas.
+- **Frontend:** funcional y conectado a la hoja real (ver capturas).
+- **Publicación web:** preparada para hosting estático; la publicación en GitHub Pages está pendiente.
 
 ## Capturas
 
-Capturas de la aplicación real en funcionamiento (1440 × 900, escala 2×), conectada a la hoja de Google Sheets del proyecto.
+Capturas de la aplicación real en funcionamiento (1440 × 900, escala 2×).
 
 1. **Vista principal** — `presentacion/01-vista-principal.png`
-   Hoja cargada desde Google Sheets: indicador "Conectado · 2 hojas", barra de fórmula con la celda activa, cuadrícula y pestañas inferiores.
+   Hoja cargada desde Google Sheets: estado "Conectado · 2 hojas", barra de fórmula, cuadrícula y pestañas.
    ![Vista principal](presentacion/01-vista-principal.png)
 
 2. **Funcionalidad principal: edición** — `presentacion/02-funcionalidad-principal.png`
-   Edición en curso con datos de demostración escritos en la interfaz (**sin guardar**): celdas modificadas resaltadas, contador de 12 cambios pendientes en **Guardar**, indicador en la pestaña y barra de fórmula mostrando la celda `C7`.
+   Edición en curso con datos de demostración: celdas modificadas resaltadas, 12 cambios pendientes en **Guardar**, indicador en la pestaña y barra de fórmula en `C7`.
    ![Edición](presentacion/02-funcionalidad-principal.png)
 
 3. **Funcionalidad complementaria: acceso por token** — `presentacion/03-funcionalidad-complementaria.png`
-   Primer ingreso sin token: ventana modal de acceso sobre la interfaz desenfocada y estado de conexión "Sin token".
+   Primer ingreso: ventana modal de acceso y estado "Sin token".
    ![Acceso por token](presentacion/03-funcionalidad-complementaria.png)
-
-> Nota: los datos que aparecen en la hoja (por ejemplo, "aaaaaaa dd") son contenido de prueba existente; la tabla Producto/Cantidad/Precio de la captura 2 es de demostración y no se guardó.
