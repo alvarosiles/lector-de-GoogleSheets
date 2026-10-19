@@ -113,16 +113,16 @@ Equipos pequeños o personas que ya trabajan con Google Sheets y necesitan una p
 
 Capturas de la aplicación real en funcionamiento (1440 × 900, escala 2×), conectada a la hoja de Google Sheets del proyecto.
 
-1. **Vista principal** — `presentacion/01-vista-principal.png`
+1. **Vista principal** — `01-vista-principal.png`
    Hoja cargada desde Google Sheets: indicador "Conectado · 2 hojas", barra de fórmula con la celda activa, cuadrícula y pestañas inferiores.
-   ![Vista principal](presentacion/01-vista-principal.png)
+   ![Vista principal](01-vista-principal.png)
 
-2. **Funcionalidad principal: edición** — `presentacion/02-funcionalidad-principal.png`
+2. **Funcionalidad principal: edición** — `02-funcionalidad-principal.png`
    Edición en curso con datos de demostración escritos en la interfaz (**sin guardar**): celdas modificadas resaltadas, contador de 12 cambios pendientes en **Guardar**, indicador en la pestaña y barra de fórmula mostrando la celda `C7`.
-   ![Edición](presentacion/02-funcionalidad-principal.png)
+   ![Edición](02-funcionalidad-principal.png)
 
-3. **Funcionalidad complementaria: acceso por token** — `presentacion/03-funcionalidad-complementaria.png`
+3. **Funcionalidad complementaria: acceso por token** — `03-funcionalidad-complementaria.png`
    Primer ingreso sin token: ventana modal de acceso sobre la interfaz desenfocada y estado de conexión "Sin token".
-   ![Acceso por token](presentacion/03-funcionalidad-complementaria.png)
+   ![Acceso por token](03-funcionalidad-complementaria.png)
 
 > Nota: los datos que aparecen en la hoja (por ejemplo, "aaaaaaa dd") son contenido de prueba existente; la tabla Producto/Cantidad/Precio de la captura 2 es de demostración y no se guardó.

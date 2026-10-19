@@ -2,7 +2,7 @@
 
 Aplicación web estática que permite **ver y editar una hoja de cálculo de Google Sheets desde una página propia**, sin que la persona usuaria tenga que iniciar sesión con una cuenta de Google. El frontend es un único archivo HTML con JavaScript nativo; el backend es un script de **Google Apps Script** publicado como aplicación web, que actúa como API JSON sobre la hoja.
 
-![Vista principal](presentacion/01-vista-principal.png)
+![Vista principal](01-vista-principal.png)
 
 ---
 
@@ -105,7 +105,7 @@ Cada `input` de la cuadrícula registra su valor en `cambios[nombreHoja]["fila,c
 ### Acceso
 El token no está en el código del frontend: se pide en una ventana modal y se guarda en `localStorage` del navegador de cada persona.
 
-![Edición con cambios pendientes](presentacion/02-funcionalidad-principal.png)
+![Edición con cambios pendientes](02-funcionalidad-principal.png)
 
 ## 7. Base de datos
 
@@ -207,4 +207,4 @@ Al ser una página estática basta con abrir `index.html` en el navegador. Funci
 
 ## Licencia
 
-MIT — ver [LICENSE](LICENSE).
+MIT — ver [LICENSE](../LICENSE).
