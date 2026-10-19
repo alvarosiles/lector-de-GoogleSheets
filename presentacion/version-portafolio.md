@@ -1,6 +1,6 @@
 # Editor web para Google Sheets
 
-**Repositorio:** `ss` (rama `servisofts`) · **Licencia:** MIT · **Estado:** prototipo funcional
+**Repositorio:** `ss` · **Licencia:** MIT · **Estado:** prototipo funcional
 
 ---
 
@@ -106,7 +106,7 @@ Equipos pequeños o personas que ya trabajan con Google Sheets y necesitan una p
 
 - **Backend:** desplegado y operativo. Lectura verificada el 19/10/2026 y escritura verificada el mismo día durante el desarrollo.
 - **Frontend:** funcional en local; las capturas se tomaron de la aplicación real conectada a la hoja.
-- **Publicación web:** pendiente. GitHub Pages no respondía en la fecha de verificación (404), el trabajo está en la rama `servisofts` y no está fusionado en `main`, y el dominio personalizado fue retirado del repositorio.
+- **Publicación web:** pendiente. GitHub Pages no respondía en la fecha de verificación (404) y el dominio personalizado fue retirado del repositorio.
 - **Calidad:** sin pruebas automatizadas.
 
 ## Capturas

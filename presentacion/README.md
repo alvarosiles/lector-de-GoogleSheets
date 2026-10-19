@@ -1,7 +1,5 @@
 # ss — Editor web para Google Sheets
 
-> Repositorio `ss` · rama de trabajo `servisofts`
-
 Aplicación web estática que permite **ver y editar una hoja de cálculo de Google Sheets desde una página propia**, sin que la persona usuaria tenga que iniciar sesión con una cuenta de Google. El frontend es un único archivo HTML con JavaScript nativo; el backend es un script de **Google Apps Script** publicado como aplicación web, que actúa como API JSON sobre la hoja.
 
 ![Vista principal](presentacion/01-vista-principal.png)
@@ -183,7 +181,7 @@ Al ser una página estática basta con abrir `index.html` en el navegador. Funci
 
 - No hay paso de compilación.
 - **Hosting previsto:** GitHub Pages, sirviendo `index.html` desde la raíz. El repositorio tuvo un archivo `CNAME` (añadido en `a0f321d` y eliminado en `044864f`).
-- **Estado verificado (19/10/2026):** `https://alvarosiles.github.io/ss/` responde 404. La rama `main` solo contiene el commit inicial y el trabajo está en `servisofts`, así que el despliegue en GitHub Pages **no está confirmado**.
+- **Estado verificado (19/10/2026):** `https://alvarosiles.github.io/ss/` responde 404, así que el despliegue en GitHub Pages **no está confirmado**.
 - **Backend:** desplegado como aplicación web de Apps Script y respondiendo correctamente en la fecha indicada.
 
 ## 13. Seguridad y consideraciones
