@@ -1,7 +1,7 @@
 # Editor web para Google Sheets
 
 **Autor:** Alvaro Siles Estrada — Ingeniero de Sistemas · Full Stack Developer · 15 años de experiencia
-**Repositorio:** `ss` · **Licencia:** MIT · **Estado:** prototipo funcional
+**Licencia:** MIT · **Estado:** prototipo funcional
 
 ---
 

@@ -1,6 +1,6 @@
 # Términos de uso
 
-**Proyecto:** ss — Editor web para Google Sheets
+**Proyecto:** Editor web para Google Sheets
 **Autor:** Alvaro Siles Estrada
 **Vigente desde:** 19 de octubre de 2026
 
@@ -12,7 +12,7 @@ El código fuente se distribuye bajo la [licencia MIT](LICENSE). Puedes usarlo, 
 
 ## 2. Descripción del servicio
 
-ss es una herramienta para consultar y editar una hoja de Google Sheets a través de una página web y de una API desplegada en Google Apps Script. No es un servicio administrado: cada instalación la despliega y opera su propietario, con su propia cuenta de Google.
+Esta aplicación es una herramienta para consultar y editar una hoja de Google Sheets a través de una página web y de una API desplegada en Google Apps Script. No es un servicio administrado: cada instalación la despliega y opera su propietario, con su propia cuenta de Google.
 
 ## 3. Uso aceptable
 

@@ -1,6 +1,6 @@
 # Política de privacidad
 
-**Proyecto:** ss — Editor web para Google Sheets
+**Proyecto:** Editor web para Google Sheets
 **Responsable:** Alvaro Siles Estrada
 **Vigente desde:** 19 de octubre de 2026
 

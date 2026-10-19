@@ -1,6 +1,6 @@
 <div align="center">
 
-# ss — Editor web para Google Sheets
+# Editor web para Google Sheets
 
 **Consulta y edición de hojas de Google Sheets desde una interfaz web propia, sin iniciar sesión con Google.**
 
@@ -43,7 +43,7 @@ Diseñado y desarrollado por **Alvaro Siles Estrada** — Ingeniero de Sistemas 
 
 Editar una hoja de Google Sheets normalmente exige una cuenta de Google con permisos sobre el archivo, y la opción "Publicar en la web" solo ofrece lectura.
 
-**ss** resuelve ese problema con una arquitectura serverless mínima:
+Este proyecto resuelve ese problema con una arquitectura serverless mínima:
 
 - un script de **Google Apps Script** expone la hoja como **API JSON** protegida por token;
 - una **página estática sin dependencias** ofrece una experiencia de edición similar a la de una hoja de cálculo.
@@ -99,7 +99,7 @@ El resultado es una herramienta ligera para consultar y actualizar datos desde l
 ## 4. Estructura del proyecto
 
 ```
-ss/
+proyecto/
 ├── index.html            # Frontend: estilos, marcado y lógica
 ├── apps-script.gs        # Backend: API en Google Apps Script
 ├── presentacion/         # Capturas de la aplicación en funcionamiento

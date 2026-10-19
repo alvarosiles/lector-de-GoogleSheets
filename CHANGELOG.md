@@ -4,7 +4,7 @@ Todos los cambios relevantes del proyecto se documentan en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y el proyecto usa [versionado semántico](https://semver.org/lang/es/).
 
-## [1.0.0] — 2026-10-19
+## 1.0.0 — 2026-10-19
 
 ### Añadido
 - **Backend en Google Apps Script** (`apps-script.gs`), con API JSON:
@@ -31,12 +31,9 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/) y e
 ### Eliminado
 - Archivo `CNAME` de dominio personalizado.
 
-## [0.1.0] — 2026-02-08
+## 0.1.0 — 2026-02-08
 
 ### Añadido
 - Versión inicial: `index.html` que incrusta la versión publicada en la web de la hoja de Google Sheets (solo lectura).
 - Licencia MIT.
 - Archivo `CNAME` para dominio personalizado.
-
-[1.0.0]: https://github.com/alvarosiles/ss/compare/b45a00e...HEAD
-[0.1.0]: https://github.com/alvarosiles/ss/commit/b45a00e

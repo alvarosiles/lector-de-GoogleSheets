@@ -1,6 +1,6 @@
 /**
  * =============================================================
- *  ss — Editor web para Google Sheets · Backend (Google Apps Script)
+ *  Editor web para Google Sheets · Backend (Google Apps Script)
  * =============================================================
  *  Autor:    Alvaro Siles Estrada — Ingeniero de Sistemas · Full Stack Developer
  *  Licencia: MIT (ver LICENSE)
