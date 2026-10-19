@@ -5,7 +5,8 @@
 // =============================================================
 
 // Clave para poder leer y escribir. Debe ser la misma que pones en la página (botón 🔑).
-const TOKEN = 'alvarosiles';
+// ⚠️ Cámbiala SOLO en el editor de Apps Script, nunca aquí: este repo es público.
+const TOKEN = 'PON-TU-TOKEN-AQUI';
 
 
 // LEER: devuelve todas las pestañas con sus datos.
